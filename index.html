@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#171b18">
+<title>江湖行旅｜文字武俠回合制</title>
+<style>
+:root{color-scheme:dark;--ink:#e9e2d2;--muted:#aaa18e;--gold:#d6b978;--jade:#7eaa8c;--red:#bd6b58;--panel:#202621;--line:#41483e;--deep:#151a17}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#465245 0,#252d27 38%,#171b18 78%);color:var(--ink);font:16px/1.65 Georgia,"Noto Serif TC","Microsoft JhengHei",serif;min-height:100vh}button,input{font:inherit}button{color:var(--ink);background:#303a32;border:1px solid #596250;padding:10px 16px;cursor:pointer;transition:.18s}button:hover:not(:disabled){border-color:var(--gold);color:#ffe4a4;transform:translateY(-1px)}button:disabled{opacity:.4;cursor:not-allowed}.wrap{max-width:1140px;margin:auto;padding:24px}.top{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding:5px 0 16px;margin-bottom:22px}.brand{letter-spacing:.22em;color:var(--gold);font-size:14px}.save{font-size:13px;color:var(--muted)}h1,h2,h3,p{margin-top:0}h1{font-size:clamp(30px,5vw,48px);line-height:1.25;letter-spacing:.12em;margin-bottom:12px}h2{font-size:23px;color:var(--gold);font-weight:500}.lead{color:#c5bda9;max-width:690px}.panel{background:linear-gradient(145deg,#272f29ed,#1c221eef);border:1px solid var(--line);padding:22px;box-shadow:0 18px 55px #0003}.hero{padding:clamp(26px,6vw,68px);background:linear-gradient(90deg,#171b18eb,#171b18bf),radial-gradient(ellipse at right,#727658,#202820 55%);border:1px solid #60624e;position:relative;overflow:hidden}.hero:after{content:"俠";position:absolute;right:6%;top:-30px;font-size:260px;color:#d9bd7230;pointer-events:none}.hero>*{position:relative;z-index:1}.eyebrow{color:var(--jade);letter-spacing:.18em;font-size:13px}.name-row{display:flex;gap:10px;margin:20px 0 10px;max-width:480px}.name-row input{flex:1;min-width:0;background:#121714;border:1px solid #555e50;padding:10px 12px;color:var(--ink)}.sect-grid,.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}.sect-card{text-align:left;min-height:165px;padding:17px;background:#222923d9}.sect-card b{display:block;color:var(--gold);font-size:19px;margin-bottom:5px}.sect-card span{display:block;color:var(--muted);font-size:14px}.sect-card em{font-style:normal;color:var(--jade);font-size:13px;display:block;margin-top:10px}.layout{display:grid;grid-template-columns:280px 1fr;gap:18px;align-items:start}.sidebar{display:grid;gap:14px}.stats{display:grid;grid-template-columns:1fr auto;gap:5px;font-size:14px}.stats span:nth-child(odd){color:var(--muted)}.bar{height:8px;background:#101411;margin:4px 0 10px;border:1px solid #373e36}.bar i{display:block;height:100%;background:var(--jade)}.bar.hp i{background:var(--red)}.bar.qi i{background:#7294ad}.main{min-height:510px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 20px}.actions button{flex:1;min-width:120px}.choice{display:block;width:100%;text-align:left;margin:9px 0;padding:13px 15px}.choice b{color:var(--gold);display:block;font-size:17px}.choice small{color:var(--muted)}.log{max-height:190px;overflow:auto;padding-left:20px;color:#c6beac;font-size:14px}.log li{margin:5px 0}.tag{display:inline-block;border:1px solid #505846;color:var(--jade);font-size:12px;padding:1px 8px;margin-right:5px}.enemy{border:1px solid #78564d;background:#321f1d88;padding:16px;margin:10px 0}.enemy h3{color:#e49c82;margin:0}.combat-moves{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:9px}.move{min-height:82px;text-align:left}.move strong{display:block;color:var(--gold)}.move small{color:var(--muted)}.muted{color:var(--muted)}.notice{color:#e1c988;border-left:2px solid var(--gold);padding-left:12px}.footer{text-align:center;color:#817c6f;font-size:12px;padding:22px}.hidden{display:none!important}@media(max-width:760px){.wrap{padding:14px}.layout{grid-template-columns:1fr}.sidebar{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}.hero:after{font-size:180px;right:-10px}.panel{padding:17px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><div class="brand">江湖行旅 <span class="muted">／ 一段由你寫下的武林傳奇</span></div><div class="save" id="save-status">尚未存檔</div></header>
+<div id="app"></div>
+<footer class="footer">原創武俠世界 · 你的選擇，決定你的江湖</footer>
+</div>
+<script>
+(function(){
+"use strict";
+const sects=[
+{id:"qingfeng",name:"青城劍派",style:"劍法輕靈，擅長連擊與閃避。",bonus:"身法 +2",stats:{dex:2},moves:["流雲劍","回風式","青嵐破"]},
+{id:"canglang",name:"滄浪刀門",style:"刀勢沉雄，攻守兼備，招招有力。",bonus:"臂力 +2",stats:{str:2},moves:["斷潮刀","守勢","怒濤斬"]},
+{id:"lingxiao",name:"凌霄宮",style:"內功綿長，真氣運轉自如。",bonus:"內力 +2",stats:{qi:2},moves:["寒星指","凝神","霜華落"]},
+{id:"baihua",name:"百花谷",style:"醫武並修，療傷解毒皆有心得。",bonus:"根骨 +2",stats:{vit:2},moves:["花影掌","調息","落英回春"]},
+{id:"tieyi",name:"鐵衣堂",style:"外家硬功，能承重擊、近身制敵。",bonus:"根骨 +1、臂力 +1",stats:{vit:1,str:1},moves:["鐵山靠","沉肩","震岳拳"]},
+{id:"wandering",name:"無門無派",style:"不受門規所拘，自創一條江湖路。",bonus:"悟性 +2",stats:{wis:2},moves:["野路子","觀勢","破綻一擊"]}
+];
+const moves={
+"流雲劍":{cost:3,power:1.35,desc:"迅捷一劍，容易命中"},
+"回風式":{cost:2,guard:1,desc:"借勢卸力，減少下次傷害"},
+"青嵐破":{cost:7,power:2.1,desc:"劍氣破空，重創敵手"},
+"斷潮刀":{cost:3,power:1.65,desc:"厚重刀勢，正面強攻"},
+"守勢":{cost:2,guard:1.35,desc:"架刀守禦，穩住氣息"},
+"怒濤斬":{cost:8,power:2.35,desc:"勢如怒潮，重斬對手"},
+"寒星指":{cost:4,power:1.55,desc:"凝氣為指，直取要害"},
+"凝神":{cost:0,heal:7,qi:5,desc:"凝神調息，恢復氣血與真氣"},
+"霜華落":{cost:8,power:2.2,desc:"寒勁透骨，凌厲一擊"},
+"花影掌":{cost:3,power:1.3,desc:"掌影翻飛，招式靈巧"},
+"調息":{cost:0,heal:9,qi:7,desc:"運功療傷，回復狀態"},
+"落英回春":{cost:6,heal:19,desc:"以內力護住心脈"},
+"鐵山靠":{cost:3,power:1.75,desc:"貼身撞擊，破敵架勢"},
+"沉肩":{cost:2,guard:1.55,desc:"沉肩墜肘，硬接來招"},
+"震岳拳":{cost:8,power:2.4,desc:"拳勁震岳，一擊定勢"},
+"野路子":{cost:2,power:1.4,desc:"沒有章法，反倒難以預測"},
+"觀勢":{cost:0,guard:1,qi:4,desc:"觀察對手，積蓄真氣"},
+"破綻一擊":{cost:7,power:2.3,desc:"看準破綻，一擊制勝"}
+};
+const encounters=[
+{name:"山道剪徑客",hp:30,atk:6,exp:18,silver:12,desc:"兩名匪徒攔住去路，眼神不善。"},
+{name:"迷途拳師",hp:39,atk:7,exp:25,silver:17,desc:"一名醉拳師搖搖晃晃地擋在路中央。"},
+{name:"黑衣鏢客",hp:48,atk:9,exp:34,silver:25,desc:"黑衣人不發一語，刀光先行。"},
+{name:"山寨頭目",hp:66,atk:11,exp:48,silver:36,desc:"寨主提刀現身，四周嘍囉都安靜下來。"}
+];
+let state=load();
+function fresh(name,sectId){
+const s=sects.find(x=>x.id===sectId)||sects[0];
+return {name:name||"無名少俠",sect:s.id,level:1,exp:0,silver:30,hp:44,maxHp:44,qi:20,maxQi:20,
+str:5+(s.stats.str||0),dex:5+(s.stats.dex||0),vit:5+(s.stats.vit||0),wis:5+(s.stats.wis||0),
+wins:0,days:1,known:[s.moves[0],s.moves[1]],logs:["你踏入江湖，前路尚遠。"],combat:null,screen:"home"};
+}
+function load(){try{const x=JSON.parse(localStorage.getItem("jianghu-save"));return x&&x.name?x:null}catch(e){return null}}
+function persist(){localStorage.setItem("jianghu-save",JSON.stringify(state));document.getElementById("save-status").textContent="已自動存檔 · "+new Date().toLocaleTimeString("zh-TW",{hour:"2-digit",minute:"2-digit"})}
+function sect(){return sects.find(x=>x.id===state.sect)||sects[0]}
+function esc(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function addLog(t){state.logs.unshift(t);state.logs=state.logs.slice(0,9)}
+function app(){const root=document.getElementById("app");if(!state){root.innerHTML=setup();wireSetup();return}
+root.innerHTML=state.combat?combatView():homeView();wireGame()}
+function setup(){return '<section class="hero"><div class="eyebrow">風起江湖 · 俠名待定</div><h1>這一趟，<br>你就是主角。</h1><p class="lead">從一名初入武林的尋常人開始，擇一門派拜師學藝，習武、歷練、結交同道。這個江湖沒有預寫好的結局。</p><label for="player-name">替自己取個江湖名</label><div class="name-row"><input id="player-name" maxlength="12" placeholder="輸入你的名字"><button id="begin">踏入江湖</button></div><p class="muted">選擇你的起點。門派會影響初始能力與所學招式。</p><div class="sect-grid">'+sects.map(s=>'<button class="sect-card" data-sect="'+s.id+'"><b>'+s.name+'</b><span>'+s.style+'</span><em>'+s.bonus+'</em></button>').join("")+'</div>'+(state?'<p><button id="continue-save">繼續上次旅程：'+esc(state.name)+'</button></p>':"")+'</section>'}
+function wireSetup(){let selected=sects[0].id;document.querySelectorAll("[data-sect]").forEach(b=>b.onclick=()=>{selected=b.dataset.sect;document.querySelectorAll("[data-sect]").forEach(x=>x.style.borderColor="");b.style.borderColor="var(--gold)"});document.getElementById("begin").onclick=()=>{const n=document.getElementById("player-name").value.trim();state=fresh(n,selected);addLog("你在"+sect().name+"門前停下腳步，決意拜師學藝。");persist();app()};const c=document.getElementById("continue-save");if(c)c.onclick=()=>app()}
+function homeView(){let s=sect();return '<div class="layout"><aside class="sidebar"><section class="panel"><h2>'+esc(state.name)+'</h2><div class="muted">'+s.name+' · '+rank(state.level)+' · 第 '+state.days+' 日</div><div class="bar hp"><i style="width:'+Math.max(0,state.hp/state.maxHp*100)+'%"></i></div><div class="stats"><span>氣血</span><b>'+state.hp+' / '+state.maxHp+'</b><span>真氣</span><b>'+state.qi+' / '+state.maxQi+'</b><span>臂力</span><b>'+state.str+'</b><span>身法</span><b>'+state.dex+'</b><span>根骨</span><b>'+state.vit+'</b><span>悟性</span><b>'+state.wis+'</b><span>閱歷</span><b>'+state.exp+' / '+nextExp()+'</b><span>銀兩</span><b>'+state.silver+' 兩</b><span>勝場</span><b>'+state.wins+'</b></div></section><section class="panel"><h2>行囊武學</h2>'+state.known.map(m=>'<div><span class="tag">招式</span>'+m+'</div>').join("")+'<p class="muted" style="margin:10px 0 0">新招式可在門派演武中領悟。</p></section></aside><main class="panel main"><div class="eyebrow">第 '+state.days+' 日 · '+esc(locationName())+'</div><h2>江湖路遠，且行且看</h2><p class="lead">你已在'+s.name+'習得初步功夫。選擇接下來的行動，每次歷練都會讓你更接近真正的高手。</p><div class="actions"><button data-act="train">門派演武</button><button data-act="travel">出門歷練</button><button data-act="rest">客棧歇息</button><button data-act="manual">探訪江湖</button></div><div id="scene">'+sceneContent()+"</div><h2 style='margin-top:24px'>旅途記聞</h2><ul class='log'>"+state.logs.map(x=>"<li>"+esc(x)+"</li>").join("")+"</ul></main></div>"}
+function rank(l){return ["初出茅廬","略有小成","江湖新秀","聲名漸起","一方好手","武林名宿","絕頂高手"][Math.min(l-1,6)]}
+function nextExp(){return state.level*35}
+function locationName(){return ["青石鎮","松風渡","落雁坡","聽雨驛","歸雲山道"][Math.min(Math.floor((state.days-1)/2),4)]}
+function sceneContent(){return '<p class="notice">「'+esc(state.name)+'，江湖從來不缺路，只看你願意走哪一條。」</p><p class="muted">今日可演武、出門歷練，或在客棧休整。闖蕩時可能遇上對手，也可能有意外收穫。</p>'}
+function wireGame(){document.querySelectorAll("[data-act]").forEach(b=>b.onclick=()=>act(b.dataset.act));document.querySelectorAll("[data-choice]").forEach(b=>b.onclick=()=>choice(b.dataset.choice))}
+function act(action){
+if(action==="train"){const possible=sect().moves.filter(m=>!state.known.includes(m));if(!possible.length){addLog("你在演武場反覆打磨已學的招式，基本功更加扎實。");state.exp+=7;state.qi=Math.min(state.maxQi,state.qi+4);levelCheck();persist();app();return}document.getElementById("scene").innerHTML='<h2>演武場上，師長指點招式</h2><p>選一門新功夫用心領悟。今日門派可傳授：</p>'+possible.map(m=>'<button class="choice" data-choice="learn:'+m+'"><b>'+m+'</b><small>'+moves[m].desc+' · 消耗 8 閱歷</small></button>').join("")+'<button data-choice="back">暫且離開</button>';wireGame();return}
+if(action==="rest"){state.days++;state.hp=Math.min(state.maxHp,state.hp+Math.ceil(state.maxHp*.48));state.qi=state.maxQi;state.silver=Math.max(0,state.silver-5);addLog("你在客棧安穩睡了一夜，氣血與真氣恢復。付了五兩房錢。");persist();app();return}
+if(action==="travel"){const e=encounters[Math.floor(Math.random()*Math.min(encounters.length,Math.ceil(state.level/2)+1))];document.getElementById("scene").innerHTML='<h2>路遇風波</h2><p>'+e.desc+'</p><p class="muted">你可以迎戰、設法避開，或先觀察對方。</p><button class="choice" data-choice="fight"><b>拔劍迎戰</b><small>以武會友，勝者可得閱歷與銀兩</small></button><button class="choice" data-choice="avoid"><b>繞道離開</b><small>不冒風險，但也沒有收穫</small></button><button class="choice" data-choice="observe"><b>先看清對手</b><small>花費一日觀察，下一戰更有把握</small></button>';state.pending=e;wireGame();return}
+if(action==="manual"){document.getElementById("scene").innerHTML='<h2>江湖見聞</h2><p>武林中門派林立，功夫各有源流。修習門派招式需要閱歷；在門派演武中習得新招，再以歷練磨練本領。氣血見底時，記得回客棧休息。</p><p class="notice">你的存檔保存在目前瀏覽器。換裝置或清除瀏覽資料後，旅程不會同步。</p><button data-choice="back">回到今日行程</button>';wireGame()}}
+function choice(c){if(c==="back"){app();return}if(c.startsWith("learn:")){const m=c.slice(6);if(state.exp<8){alert("閱歷不足。先出門歷練、累積閱歷吧。");return}state.exp-=8;state.known.push(m);addLog("師長傳授你「"+m+"」，你將招式記在心中。");persist();app();return}
+if(c==="avoid"){state.days++;addLog("你謹慎繞開衝突，沿小路繼續前行。");persist();app();return}
+if(c==="observe"){state.days++;state.scout=true;addLog("你觀察對手的步法，記住了對方的破綻。");persist();app();return}
+if(c==="fight"){startFight(state.pending);return}
+if(c.startsWith("move:")){playerMove(c.slice(5));return}}
+function startFight(e){state.days++;state.combat={enemy:{...e,hp:e.hp,maxHp:e.hp},guard:0,scout:!!state.scout};state.scout=false;addLog("你與「"+e.name+"」交手，刀劍聲驚起林間飛鳥。");persist();app()}
+function combatView(){let c=state.combat,e=c.enemy;return '<div class="layout"><aside class="sidebar"><section class="panel"><h2>'+esc(state.name)+'</h2><div class="muted">'+sect().name+' · '+rank(state.level)+'</div><p>氣血 '+state.hp+' / '+state.maxHp+'</p><div class="bar hp"><i style="width:'+Math.max(0,state.hp/state.maxHp*100)+'%"></i></div><p>真氣 '+state.qi+' / '+state.maxQi+'</p><div class="bar qi"><i style="width:'+Math.max(0,state.qi/state.maxQi*100)+'%"></i></div><div class="stats"><span>臂力</span><b>'+state.str+'</b><span>身法</span><b>'+state.dex+'</b><span>根骨</span><b>'+state.vit+'</b></div></section><section class="panel"><h2>交手記錄</h2><ul class="log">'+state.logs.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul></section></aside><main class="panel main"><div class="eyebrow">回合制交鋒 · 第 '+(c.turn||1)+' 回合</div><h2>招式已出，勝負未分</h2><section class="enemy"><h3>'+esc(e.name)+'</h3><p>'+esc(e.desc)+'</p><div>對手氣血：'+Math.max(0,e.hp)+' / '+e.maxHp+'</div><div class="bar hp"><i style="width:'+Math.max(0,e.hp/e.maxHp*100)+'%"></i></div></section><p>選擇本回合招式。真氣不足時無法施展消耗真氣的功夫。</p><div class="combat-moves">'+state.known.map(m=>{let x=moves[m];return '<button class="move" data-choice="move:'+m+'" '+(state.qi<x.cost?'disabled':'')+'><strong>'+m+'</strong><small>'+x.desc+' · 真氣 '+x.cost+'</small></button>'}).join("")+'</div><div class="actions"><button data-choice="move:逃走">伺機脫身</button></div></main></div>'}
+function playerMove(m){let c=state.combat,e=c.enemy;if(m==="逃走"){if(Math.random()<.65){state.combat=null;addLog("你趁隙脫身，保全實力。");persist();app();return}else addLog("對手封住退路，你只得繼續迎戰。")}
+else{let x=moves[m];state.qi-=x.cost;if(x.heal){let gain=x.heal+(m==="落英回春"?Math.floor(state.wis/2):0);state.hp=Math.min(state.maxHp,state.hp+gain);addLog("你使出「"+m+"」，恢復 "+gain+" 點氣血。")}
+if(x.qi){state.qi=Math.min(state.maxQi,state.qi+x.qi);addLog("你運轉內息，真氣有所恢復。")}
+if(x.guard){c.guard=x.guard;addLog("你使出「"+m+"」，凝神守住門戶。")}
+if(x.power){let hit=Math.max(2,Math.floor((state.str*1.6+state.dex*.7)*x.power*(.82+Math.random()*.36)));if(c.scout){hit=Math.floor(hit*1.25);c.scout=false;addLog("你抓住先前觀察到的破綻！")}e.hp-=hit;addLog("你以「"+m+"」命中，造成 "+hit+" 點傷害。")}}
+if(e.hp<=0){winFight();return}
+let dmg=Math.max(1,Math.floor(e.atk+Math.random()*5-state.vit*.45-state.dex*.3)-c.guard);c.guard=0;state.hp-=dmg;c.turn=(c.turn||1)+1;addLog(e.name+"趁勢反擊，你受到 "+dmg+" 點傷害。");
+if(state.hp<=0){state.hp=1;state.silver=Math.max(0,state.silver-12);state.combat=null;addLog("你力竭倒地，幸得路人相救。醒來時已在客棧，遺失了些銀兩。")}
+persist();app()}
+function winFight(){let e=state.combat.enemy;state.exp+=e.exp;state.silver+=e.silver;state.wins++;state.combat=null;state.hp=Math.max(1,state.hp);addLog("你擊退"+e.name+"，得閱歷 "+e.exp+"、銀兩 "+e.silver+"。");levelCheck();persist();app()}
+function levelCheck(){while(state.exp>=nextExp()){state.exp-=nextExp();state.level++;state.maxHp+=8+Math.floor(state.vit/3);state.maxQi+=3+Math.floor(state.wis/3);state.str++;if(state.level%2===0)state.dex++;state.hp=state.maxHp;state.qi=state.maxQi;addLog("你突破至「"+rank(state.level)+"」！氣血、真氣盡復，武學根基更上一層。")}}
+app();
+})();
+</script>
+</body>
+</html>
